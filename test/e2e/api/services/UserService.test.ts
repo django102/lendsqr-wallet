@@ -32,7 +32,7 @@ describe("UserService", () => {
     });
 
 
-    describe("create", ()=>{
+    describe("createUser", ()=>{
         let createUserMock : jest.SpyInstance;
         let findExistingUser : jest.SpyInstance;
 

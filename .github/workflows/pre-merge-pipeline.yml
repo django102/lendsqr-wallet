@@ -107,8 +107,8 @@ jobs:
                 
                 # MySQL DATABASE
                 KNEX_CONNECTION: mysql2
-                KNEX_USERNAME: "test_user"
-                KNEX_PASSWORD: "test_pass"
+                KNEX_USERNAME: "admin"
+                KNEX_PASSWORD: "pass"
                 KNEX_HOST: localhost
                 KNEX_PORT: 3306
                 KNEX_DATABASE: x
