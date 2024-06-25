@@ -2,7 +2,9 @@
 
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE.)
 &nbsp;
-[![Version: v0.0.0](https://img.shields.io/badge/lendsqr-wallet-v0.0.0-blue?style=flat&logo=money)](CHANGELOG.md)
+[![Version: v0.0.0](https://img.shields.io/badge/Lendsqr_Wallet-v0.0.0-blue?style=flat&logo=money)](CHANGELOG.md)
+&nbsp;
+[![codecov](https://codecov.io/gh/django102/lendsqr-wallet/graph/badge.svg?token=FsVdxFIsVR)](https://codecov.io/gh/django102/lendsqr-wallet)
 &nbsp;
 
 

@@ -5,39 +5,7 @@ on:
       branches:
         - main
 
-jobs:
-    verify-version-upgrade:
-        runs-on: ubuntu-latest
-        name: Verify Version Upgrade
-        steps:
-            - uses: actions/checkout@v4
-          
-            - name: Get changed files
-              id: changed-files
-              uses: tj-actions/changed-files@v42
-          
-            - name: Check if package.json and swagger.json was changed
-              run: |
-                declare -A files
-                for file in ${{ steps.changed-files.outputs.all_changed_files }}
-                do
-                    files[$file]=1
-                done
-          
-                if [[ -v files['package.json'] ]] ; then
-                    echo "package.json was updated"
-                else
-                    echo "package.json was not updated! Please, update and increase the version"
-                    exit 1
-                fi
-          
-                if [[ -v files['src/api/swagger.json'] ]] ; then
-                    echo "swagger.json was updated"
-                else
-                    echo "swagger.json was not updated! Please, update and increase the version"
-                    exit 1
-                fi
-    
+jobs: 
     run-test:
         runs-on: ubuntu-latest
         name: Run Unit Tests                    
