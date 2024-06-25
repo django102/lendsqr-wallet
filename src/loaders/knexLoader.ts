@@ -23,7 +23,7 @@ export const dataSource: Knex.Config = {
     compileSqlOnError: false
 };
 
-const db = knex(dataSource);
+export const db = knex(dataSource);
 
 export const mysqlLoader: MicroframeworkLoader = async (settings: MicroframeworkSettings | undefined) => {
     Container.set("defaultConnection", dataSource);

@@ -1,6 +1,35 @@
 {
 	"components": {
-		"schemas": {},
+		"schemas": {
+			"CreateUserRequest": {
+				"properties": {
+					"email": {
+						"format": "email",
+						"type": "string"
+					},
+					"password": {
+						"type": "string"
+					},
+					"firstName": {
+						"type": "string"
+					},
+					"lastName": {
+						"type": "string"
+					},
+					"phoneNumber": {
+						"type": "string"
+					}
+				},
+				"type": "object",
+				"required": [
+					"email",
+					"password",
+					"firstName",
+					"lastName",
+					"phoneNumber"
+				]
+			}
+		},
 		"securitySchemes": {
 			"bearerAuth": {
 				"scheme": "bearer",
@@ -14,5 +43,34 @@
 		"version": "0.0.0"
 	},
 	"openapi": "3.0.0",
-	"paths": {}
+	"paths": {
+		"/user": {
+			"post": {
+				"operationId": "UserController.create",
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/CreateUserRequest"
+							}
+						}
+					},
+					"description": "CreateUserRequest",
+					"required": true
+				},
+				"responses": {
+					"201": {
+						"content": {
+							"application/json": {}
+						},
+						"description": "Successful response"
+					}
+				},
+				"summary": "User Registration",
+				"tags": [
+					"User"
+				]
+			}
+		}
+	}
 }

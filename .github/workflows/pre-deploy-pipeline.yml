@@ -103,6 +103,9 @@ jobs:
                 SWAGGER_FILE: api/swagger.json
                 SWAGGER_STATS_ROUTE: /swagger-stats/ui
 
+                # Constants
+                JWT_HASHER: xyzABC$$
+
 
 
             - name: Upload coverage reports to Codecov
