@@ -1,12 +1,10 @@
 import { Action, UnauthorizedError } from "routing-controllers";
 import Container from "typedi";
-import { Connection } from "typeorm";
 
 import AuthenticationService from "../services/AuthenticationService";
 
 
-export function AuthorizationChecker(connection: Connection): (action: Action) => Promise<boolean> | boolean {
-    connection;
+export function AuthorizationChecker(): (action: Action) => Promise<boolean> | boolean {
     const authenticationService = Container.get<AuthenticationService>(AuthenticationService);
 
     return async function innerAuthorizationChecker(action: Action): Promise<boolean> {

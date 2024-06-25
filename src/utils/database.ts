@@ -1,64 +1,38 @@
-import { MongoMemoryServer } from "mongodb-memory-server";
+import { Knex, knex } from "knex";
 import Container from "typedi";
-import { DataSource } from "typeorm";
 
 import { env } from "../env";
 
+const myDB = env.db.mysql;
 
-export const createMongoConnection = async (): Promise<DataSource> => {
-    const server = await MongoMemoryServer.create();
-    const url = server.getUri();
   
-    const dataSource = new DataSource({
-        type: env.db.mongo.type as any,
-        url,
-        database: env.db.mongo.database,
-        port: env.db.mongo.port,
-        synchronize: env.db.mongo.synchronize,
-        logging: env.db.mongo.logging,
-        entities: env.app.dirs.mongo.entities,
-        migrations: env.app.dirs.mongo.migrations,
-        useUnifiedTopology: true,
-        useNewUrlParser: true,
-    });
-  
-    Container.set("mongoConnection", dataSource);
-  
-    await dataSource.initialize();
-    return dataSource;
-};
-  
-export const createMysqlConnection = async (): Promise<DataSource> => {
-    const dataSource = new DataSource({
-        type: env.db.mysql.type as any,
-        replication: {
-            master: {
-                username: env.db.mysql.username,
-                password: env.db.mysql.password,
-                host: env.db.mysql.host,
-                database: env.db.mysql.database,
-                port: env.db.mysql.port,
-            },
-            slaves: [
-                {
-                    username: env.db.mysql.username,
-                    password: env.db.mysql.password,
-                    host: env.db.mysql.host,
-                    database: env.db.mysql.database,
-                    port: env.db.mysql.port,
-                }
-            ]
-        }
-    });
-    await dataSource.initialize();
-    Container.set("defaultConnection", dataSource);
-    return dataSource;
+export const createMysqlConnection = async (): Promise<Knex> => {
+    const dataSource: Knex.Config = {
+        client: myDB.type,
+        connection: {
+            host: myDB.host,
+            port: myDB.port,
+            user: myDB.username,
+            password: myDB.password,
+            database: myDB.database,
+        },
+        migrations: {
+            directory: env.app.dirs.mysql.migrationsDir,
+            tableName: "zzz_migrations"
+        },
+        compileSqlOnError: false
+    };
+
+    const db = knex(dataSource);
+    await db.raw("SELECT 1");
+    Container.set("defaultConnection", db);
+    return db;
 };
 
-export const dropDatabase = (connection: DataSource) => {
-    return connection.dropDatabase();
-};
+// export const dropDatabase = (connection: Knex) => {
+//     return connection.dropDatabase();
+// };
 
-export const closeDatabase = (connection: DataSource) => {
-    return connection.close();
+export const closeDatabase = (connection: Knex) => {
+    return connection.destroy();
 };

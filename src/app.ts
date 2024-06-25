@@ -2,17 +2,15 @@ import "reflect-metadata";
 import { bootstrapMicroframework } from "microframework-w3tec";
 
 // import "./loaders/datadogLoader";
-import { env } from "./env";
 import { banner } from "./lib/banner";
 import { Logger } from "./lib/logger";
 import { catchAllLoader } from "./loaders/catchAllLoader";
 import { eventDispatchLoader } from "./loaders/eventDispatchLoader";
 import { expressLoader } from "./loaders/expressLoader";
 import { iocLoader } from "./loaders/iocLoader";
+import { mysqlLoader } from "./loaders/knexLoader";
 import { metricsLoader } from "./loaders/metricsLoader";
-import { mongoLoader } from "./loaders/mongoLoader";
 import { swaggerLoader } from "./loaders/swaggerLoader";
-import { mysqlLoader } from "./loaders/typeORMLoader";
 import { winstonLoader } from "./loaders/winstonLoader";
 import { buildSwagger } from "./utils/swaggerBuilder";
 
@@ -33,10 +31,6 @@ const loadersArr = [
     catchAllLoader,
     mysqlLoader,
 ];
-
-if (!env.db.mongo.disabled) {
-    loadersArr.push(mongoLoader);
-}
 
 bootstrapMicroframework({
     config: {

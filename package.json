@@ -1,9 +1,9 @@
 {
-  "name": "typescript-template",
-  "displayName": "Typescript Template",
+  "name": "lendsqr-wallet",
+  "displayName": "Lendsqr Demo Wallet",
   "version": "0.0.0",
   "main": "src/app.ts",
-  "repository": "https://github.com/django102/typescript-template.git",
+  "repository": "https://github.com/django102/lendsqr-wallet.git",
   "author": "Wale K. Santos <eighteen.eighty.one@outlook.com>",
   "license": "Apache-2.0",
   "private": true,
@@ -16,11 +16,8 @@
     "lint": "nps lint",
     "prepare": "husky install",
     "deploy": "yarn install && yarn run build",
-    "typeorm": "typeorm-ts-node-commonjs",
-    "create-migration": "yarn run typeorm migration:generate  -d ./src/database/migrationConnection.ts ./src/database/migrations/mysql/$npm_config_name",
-    "migrate": "yarn run typeorm -d ./src/database/migrationConnection.ts migration:run",
-    "revert-migration": "yarn run typeorm -d ./src/database/migrationConnection.ts migration:revert",
-    "show-migration": "yarn run typeorm -d ./src/database/migrationConnection.ts migration:show"
+    "create-migration": "knex migrate:make $npm_config_name -x ts --migrations-directory ./src/database/migrations",
+    "migrate": "knex migrate:latest --migrations-directory ./src/database/migrations"
   },
   "pre-commit": [
     "lint"
@@ -58,10 +55,10 @@
     "jest": "^29.7.0",
     "jsonfile": "^6.1.0",
     "jsonwebtoken": "^9.0.2",
+    "knex": "^3.1.0",
     "lodash": "^4.17.21",
     "microframework-w3tec": "^0.6.3",
     "moment": "^2.30.1",
-    "mongodb-memory-server": "^9.1.8",
     "morgan": "^1.10.0",
     "mysql2": "^3.9.2",
     "nodemon": "^3.0.3",
@@ -78,7 +75,6 @@
     "ts-node": "^10.9.2",
     "tslib": "^2.6.2",
     "typedi": "^0.8.0",
-    "typeorm": "^0.3.6",
     "typescript": "5.3.3",
     "winston": "^3.11.0",
     "yarn": "^1.22.21"
@@ -94,6 +90,7 @@
     "eslint-plugin-no-null": "^1.0.2",
     "eslint-plugin-prefer-arrow": "^1.2.3",
     "husky": "^8.0.0",
+    "mock-knex": "^0.4.13",
     "pre-commit": "^1.2.2",
     "ts-jest": "^29.1.2"
   },

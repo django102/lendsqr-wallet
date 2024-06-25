@@ -1,7 +1,8 @@
 import * as fs from "fs";
 import * as path from "path";
 
-import { getFromContainer, MetadataStorage } from "class-validator";
+import { defaultMetadataStorage } from "class-transformer/cjs/storage";
+// import { getFromContainer, MetadataStorage } from "class-validator";
 import { validationMetadatasToSchemas } from "class-validator-jsonschema";
 import deepEqual from "deep-equal";
 import glob from "glob";
@@ -26,9 +27,10 @@ export function buildSwagger(): void {
             require(ctrlFile);
         });
     });
-    // Parse routing-controllers classes into OpenAPI spec:
-    const metadatas = (getFromContainer(MetadataStorage) as any).validationMetadatas;
-    const schemas = validationMetadatasToSchemas(metadatas);
+    // // Parse routing-controllers classes into OpenAPI spec:
+    // const metadatas = (getFromContainer(MetadataStorage) as any).validationMetadatas;
+    // const schemas = validationMetadatasToSchemas(metadatas);
+    const schemas = validationMetadatasToSchemas({ classTransformerMetadataStorage: defaultMetadataStorage });
     const storage = getMetadataArgsStorage();
     const spec = routingControllersToSpec(storage, routingControllersOptions, {
         components: { 

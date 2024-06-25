@@ -1,14 +1,14 @@
-# typescript-template
+# lendsqr-wallet
 
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE.)
 &nbsp;
-[![Version: v0.0.0](https://img.shields.io/badge/typescript_template-v0.0.0-blue?style=flat&logo=money)](CHANGELOG.md)
+[![Version: v0.0.0](https://img.shields.io/badge/lendsqr-wallet-v0.0.0-blue?style=flat&logo=money)](CHANGELOG.md)
 &nbsp;
 
 
 &nbsp;
 
-### Typescript Template with w3tec Microframework
+### Lendsqr Demo Wallet
 
 &nbsp;
 
@@ -20,78 +20,55 @@ This respository is available as open source under the terms of the [Apache 2.0 
 
 ## Environment Variables Required to bootstrap this project
 
-| Key                      | Environment Variable  | Default                                                             |
-| ------------------------ | --------------------- | ------------------------------------------------------------------- |
-| `NODE_ENV`               | ` `                   | `local`                                                             |
-| ` `                      | ` `                   | ` `                                                                 |
-| `# Application`          | ` `                   | ` `                                                                 |
-| `APP_SCHEMA`             | ` `                   | `http`                                                              |
-| `APP_HOST`               | ` `                   | `localhost`                                                         |
-| `PORT`                   | ` `                   | `80`                                                                |
-| `APP_EXPOSED_PORT`       | ` `                   | `80`                                                                |
-| ` `                      | ` `                   | ` `                                                                 |
-| `# Logging`              | ` `                   | ` `                                                                 |
-| `LOG_LEVEL`              | ` `                   | `debug`                                                             |
-| `LOG_OUTPUT`             | ` `                   | `dev`                                                               |
-| ` `                      | ` `                   | ` `                                                                 |
-| `# MySQL Database`       | ` `                   | ` `                                                                 |
-| `TYPEORM_CONNECTION`     | ` `                   | `mysql`                                                             |
-| `TYPEORM_USERNAME`       | ` `                   | ` `                                                                 |
-| `TYPEORM_PASSWORD`       | ` `                   | ` `                                                                 |
-| `TYPEORM_HOST`           | ` `                   | `localhost`                                                         |
-| `TYPEORM_PORT`           | ` `                   | `3306`                                                              |
-| `TYPEORM_DATABASE`       | ` `                   | ` `                                                         |
-| ` `                      | ` `                   | ` `                                                                 |
-| `# MongoDB`              | ` `                   | ` `                                                                 |
-| `DB_CONNECTION`          | ` `                   | `mongodb`                                                           |
-| `DB_USERNAME`            | ` `                   | ` `                                                                 |
-| `DB_PASSWORD`            | ` `                   | ` `                                                                 |
-| `DB_HOST`                | ` `                   | `localhost`                                                         |
-| `DB_PORT`                | ` `                   | `27017`                                                             |
-| `DB_DATABASE`            | ` `                   | ` `                                                         |
-| ` `                      | ` `                   | ` `                                                                 |
-| `# Path Structure`       | ` `                   | ` `                                                                 |
-| `DB_SYNCHRONIZE`         | ` `                   | `false`                                                             |
-| `DB_LOGGING`             | ` `                   | `error`                                                             |
-| `DB_LOGGER`              | ` `                   | `advanced-console`                                                  |
-| `DB_MIGRATIONS`          | ` `                   | `src/database/migrations/**/*.ts`                                   |
-| `DB_MIGRATIONS_DIR`      | ` `                   | `src/database/migrations`                                           |
-| `DB_ENTITIES`            | ` `                   | `src/api/models/**/*.ts`                                            |
-| `DB_ENTITIES_DIR`        | ` `                   | `src/api/models`                                                    |
-| `DB_DISABLED`            | ` `                   | `true`                                                              |
-| ` `                      | ` `                   | ` `                                                                 |
-| `TYPEORM_SYNCHRONIZE`    | ` `                   | `false`                                                             |
-| `TYPEORM_LOGGING`        | ` `                   | `error`                                                             |
-| `TYPEORM_LOGGER`         | ` `                   | `advanced-console`                                                  |
-| `TYPEORM_MIGRATIONS`     | ` `                   | `src/database/migrations/mysql/**/*.ts`                             |
-| `TYPEORM_MIGRATIONS_DIR` | ` `                   | `src/database/migrations/mysql`                                     |
-| `TYPEORM_ENTITIES`       | ` `                   | `src/api/models/mysql/**/*.ts`                                      |
-| `TYPEORM_ENTITIES_DIR`   | ` `                   | `src/api/models/mysql`                                              |
-| `TYPEORM_DISABLED`       | ` `                   | `false`                                                             |
-| ` `                      | ` `                   | ` `                                                                 |
-| `# Swagger`              | ` `                   | ` `                                                                 |
-| `SWAGGER_ENABLED`        | ` `                   | `true`                                                              |
-| `SWAGGER_ROUTE`          | ` `                   | `/swagger`                                                          |
-| `SWAGGER_FILE`           | ` `                   | `api/swagger.json`                                                  |
-| `SWAGGER_STATS_ROUTE`    | ` `                   | `/swagger-stats/ui`                                                 |
-|                          |                       |                                                                     |
-| `# Constants`            | ` `                   | ` `                                                                 |
-| `JWT_HASHER`             | ` `                   | `Yab&D4wmpPFZF$QU@C9E*YmDSZ58jnHCZSZx64z%op8oxew*R47p82h#b%obuvGW`  |
-| ` `                      | ` `                   | ` `                                                                 |
-
+| Key                        | Environment Variable   | Default                                                                                           |
+| -------------------------- | ---------------------- | ------------------------------------------------------------------------------------------------- |
+| **NODE_ENV**               |                        | `local`                                                                                           |
+| &nbsp;                     |                        |                                                                                                   |
+| `# Application`            |                        |                                                                                                   |
+| **APP_SCHEMA**             |                        | `http`                                                                                            |
+| **APP_HOST**               |                        | `localhost`                                                                                       |
+| **PORT**                   |                        | `80`                                                                                              |
+| **APP_EXPOSED_PORT**       |                        | `80`                                                                                              |
+| &nbsp;                     |                        |                                                                                                   |
+| `# Logging`                |                        |                                                                                                   |
+| **LOG_LEVEL**              |                        | `debug`                                                                                           |
+| **LOG_OUTPUT**             |                        | `dev`                                                                                             |
+| &nbsp;                     |                        |                                                                                                   |
+| `# MySQL Database`         |                        |                                                                                                   |
+| **KNEX_CONNECTION**        |                        | `mysql2`                                                                                          |
+| **KNEX_USERNAME**          |                        |                                                                                                   |
+| **KNEX_PASSWORD**          |                        |                                                                                                   |
+| **KNEX_HOST**              |                        | `localhost`                                                                                       |
+| **KNEX_PORT**              |                        | `3306`                                                                                            |
+| **KNEX_DATABASE**          |                        | `lendsqr`                                                                                         |
+| &nbsp;                     |                        |                                                                                                   |
+| **KNEX_SYNCHRONIZE**       |                        | `false`                                                                                           |
+| **KNEX_LOGGING**           |                        | `error`                                                                                           |
+| **KNEX_LOGGER**            |                        | `advanced-console`                                                                                |
+| **KNEX_MIGRATIONS**        |                        | `src/database/migrations/mysql/**/*.ts`                                                           |
+| **KNEX_MIGRATIONS_DIR**    |                        | `src/database/migrations/mysql`                                                                   |
+| **KNEX_ENTITIES**          |                        | `src/api/models/mysql/**/*.ts`                                                                    |
+| **KNEX_ENTITIES_DIR**      |                        | `src/api/models/mysql`                                                                            |
+| **KNEX_DISABLED**          |                        | `false`                                                                                           |
+| &nbsp;                     |                        |                                                                                                   |
+| `# Swagger`                |                        |                                                                                                   |
+| **SWAGGER_ENABLED**        |                        | `true`                                                                                            |
+| **SWAGGER_ROUTE**          |                        | `/swagger`                                                                                        |
+| **SWAGGER_FILE**           |                        | `api/swagger.json`                                                                                |
+| **SWAGGER_STATS_ROUTE**    |                        | `/swagger-stats/ui`                                                                               |
+| &nbsp;                     |                        |                                                                                                   |
 
 
 
 ### Dependencies
 - Node >=20.10.0
-- Mongo 4.4.0
 - MySQL 8
 
 &nbsp;
 
 ## Cloning the Repository
 Open your Terminal, and type:
-`$ git clone https://github.com/django102/typescript-template.git`
+`$ git clone https://github.com/django102/lendsqr-wallet.git`
 
 
 ## Commands
@@ -123,7 +100,7 @@ You don't necessarily need to write your own scripts as running the `create-migr
 
 ### Running
 
-- `cd` into your new `typescript-template` directory
+- `cd` into your new `lendsqr-wallet` directory
 - Install the peer dependencies
 
   ```bash

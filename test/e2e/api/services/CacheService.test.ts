@@ -48,12 +48,12 @@ describe("CacheService", () => {
 
             const result = await cacheService.setValue({
                 key: "testKey",
-                value: { hi:"there" },
+                value: { hi: "there" },
                 expire: 10,
             });
 
             expect(result).toBe(true);
-            expect(redisClientSetMock).toHaveBeenCalledWith("testKey", JSON.stringify({ hi:"there" }), "EX", 10);
+            expect(redisClientSetMock).toHaveBeenCalledWith("testKey", JSON.stringify({ hi: "there" }), "EX", 10);
             expect(loggerMock).not.toHaveBeenCalled();
         });
 

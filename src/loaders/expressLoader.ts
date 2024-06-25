@@ -13,7 +13,7 @@ export const expressLoader: MicroframeworkLoader = (settings: MicroframeworkSett
      * We could have also use useExpressServer here to attach controllers to an existing express instance.
      */
 
-        const connection = settings.getData("connection");
+        // const connection = settings.getData("connection");
 
         const expressApp: Application = createExpressServer({
             cors: true,
@@ -26,7 +26,7 @@ export const expressLoader: MicroframeworkLoader = (settings: MicroframeworkSett
             controllers: env.app.dirs.controllers,
             middlewares: env.app.dirs.middlewares,
             interceptors: env.app.dirs.interceptors,
-            authorizationChecker: AuthorizationChecker(connection),
+            authorizationChecker: AuthorizationChecker(),
         });
 
         // Run application to listen on given port
