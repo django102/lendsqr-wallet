@@ -8,6 +8,7 @@ import { UserRepository } from "../repositories/UserRepository";
 import CreateUserRequest from "../requests/payloads/CreateUserRequest";
 import { ServiceResponse } from "../responses";
 
+import AdjutorService from "./AdjutorService";
 import AuthenticationService from "./AuthenticationService";
 import BaseService from "./BaseService";
 import UtilityService from "./UtilityService";
@@ -19,8 +20,9 @@ export default class UserService extends BaseService {
     constructor(
         private log: Logger,
         private authenticationService: AuthenticationService,
-        private walletService: WalletService
-    ) {
+        private walletService: WalletService,
+        private adjutorService: AdjutorService
+    ) { 
         super();
     }
     
@@ -114,6 +116,34 @@ export default class UserService extends BaseService {
         } catch (err) {
             this.log.error("Could not complete transfer at this time", { err });
             return ServiceResponse.error(`Could not complete transfer at this time: ${err}`);
+        }
+    }
+
+    // Run in the background after the user signs up. This checks the user's email address and phone number against the Adjutor Blacklist and blocks the user from using the platform if found culpable
+    public async checkUserAgainstBlacklist(email:string, phoneNumber:string): Promise<ServiceResponse> {
+        try {
+            const existingUser = await UserRepository.findExisting(email, phoneNumber);
+            if(!existingUser){
+                return ServiceResponse.error("User with email or phone number does not exist", ResponseStatus.BAD_REQUEST);
+            }
+
+            const resourcePath = "verification/karma/";
+            const emailLookupResponse = await this.adjutorService.getResource(`${resourcePath}${email}`);
+            const phoneNumberLookup = await this.adjutorService.getResource(`${resourcePath}${phoneNumber}`);
+
+            const isEmailFound = emailLookupResponse.status === ResponseStatus.OK;
+            const isPhoneFound = phoneNumberLookup.status === ResponseStatus.OK;
+
+            if(!isEmailFound && !isPhoneFound) {
+                await UserRepository.updateUser(existingUser, { isApproved: true });
+            }
+
+            // Send email to user about approval status, successful or not
+
+            return ServiceResponse.success("Verification complete");
+        } catch (err) {
+            this.log.error("Could not validate user at this time", { err });
+            return ServiceResponse.error(`Could not validate user at this time: ${err}`);
         }
     }
 }

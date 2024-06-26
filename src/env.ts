@@ -109,5 +109,11 @@ export const env = {
         port: getOsEnvWithDefault("REDIS_PORT", "6379"),
         username: getOsEnvWithDefault("REDIS_USER", ""),
         password: getOsEnvWithDefault("REDIS_PASSWORD", ""),
+    },
+    lendsqr: {
+        adjutor: {
+            baseUrl: getOsEnv("ADJUTOR_BASE_URL"),
+            apiKey: getOsEnv("ADJUTOR_API_KEY")
+        }
     }
 };

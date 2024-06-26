@@ -1,6 +1,7 @@
 import { ResponseStatus } from "../../../../src/api/enums/ResponseStatus";
 import { UserRepository } from "../../../../src/api/repositories/UserRepository";
 import { ServiceResponse } from "../../../../src/api/responses";
+import AdjutorService from "../../../../src/api/services/AdjutorService";
 import AuthenticationService from "../../../../src/api/services/AuthenticationService";
 import UserService from "../../../../src/api/services/UserService";
 import UtilityService from "../../../../src/api/services/UtilityService";
@@ -12,6 +13,7 @@ describe("UserService", () => {
     let userService: UserService;
     let authenticationService: AuthenticationService;
     let walletService: WalletService;
+    let adjutorService: AdjutorService;
 
     const mockUser = {
         email: "example@example.com",
@@ -33,10 +35,12 @@ describe("UserService", () => {
         },
     };
 
+
     beforeAll(()=>{
         userService = UserServiceMock.getInstance();
         authenticationService = UserServiceMock.authenticationService;
         walletService = UserServiceMock.walletService;
+        adjutorService = UserServiceMock.adjutorService;
     });
 
     afterEach(()=>{
@@ -272,6 +276,92 @@ describe("UserService", () => {
             expect(transferBetweenWalletsMock).toHaveBeenCalledWith(headers.user.accountNumber, mockUser.accountNumber, 200);
             expect(response.code).toEqual(ResponseStatus.INTERNAL_SERVER_ERROR);
             expect(response.data).toBeUndefined();
+        });
+    });
+
+    describe("checkUserAgainstBlacklist", () => {
+        let findExistingUser : jest.SpyInstance;
+        let updateUser: jest.SpyInstance;
+        let getAxiosResource: jest.SpyInstance;
+
+
+        beforeEach(() => {
+            findExistingUser = jest.spyOn(UserRepository, "findExisting");
+            updateUser = jest.spyOn(UserRepository, "updateUser");
+            getAxiosResource = jest.spyOn(adjutorService, "getResource");
+        });
+      
+        afterEach(() => {
+            jest.clearAllMocks();
+        });
+        
+        it("should return an error if the user does not exist", async () => {
+            const email = "test@example.com";
+            const phoneNumber = "1234567890";
+    
+            findExistingUser.mockResolvedValueOnce(null);
+    
+            const response = await userService.checkUserAgainstBlacklist(email, phoneNumber);
+    
+            expect(findExistingUser).toHaveBeenCalledWith(email, phoneNumber);
+            expect(response).toEqual(ServiceResponse.error("User with email or phone number does not exist", ResponseStatus.BAD_REQUEST));
+        });
+    
+        it("should update the user as approved if the user is not found in the blacklist", async () => {
+            const email = "test@example.com";
+            const phoneNumber = "1234567890";
+            const existingUser = { id: 1, email, phoneNumber, isApproved: false };
+    
+            findExistingUser.mockResolvedValueOnce(existingUser);
+            getAxiosResource
+                .mockImplementationOnce(() => { return { status: ResponseStatus.NOT_FOUND, data: null }; })
+                .mockImplementationOnce(() => { return { status: ResponseStatus.NOT_FOUND, data: null }; });
+                
+            updateUser.mockResolvedValueOnce(existingUser);
+    
+            const response = await userService.checkUserAgainstBlacklist(email, phoneNumber);
+    
+            expect(findExistingUser).toHaveBeenCalledWith(email, phoneNumber);
+            expect(getAxiosResource).toHaveBeenCalledWith("verification/karma/test@example.com");
+            expect(getAxiosResource).toHaveBeenCalledWith("verification/karma/1234567890");
+            expect(updateUser).toHaveBeenCalledWith(existingUser, { isApproved: true });
+            expect(response).toEqual(ServiceResponse.success("Verification complete"));
+        });
+    
+        it("should return an error if the user is found in the blacklist", async () => {
+            const email = "test@example.com";
+            const phoneNumber = "1234567890";
+            const existingUser = { id: 1, email, phoneNumber, isApproved: false };
+    
+            findExistingUser.mockResolvedValueOnce(existingUser);
+            getAxiosResource
+                .mockResolvedValueOnce({ status: ResponseStatus.OK, data: { isBlacklisted: true } })
+                .mockResolvedValueOnce({ status: ResponseStatus.OK, data: { isBlacklisted: true } });
+    
+            const response = await userService.checkUserAgainstBlacklist(email, phoneNumber);
+    
+            expect(findExistingUser).toHaveBeenCalledWith(email, phoneNumber);
+            expect(getAxiosResource).toHaveBeenCalledWith("verification/karma/test@example.com");
+            expect(getAxiosResource).toHaveBeenCalledWith("verification/karma/1234567890");
+            expect(updateUser).not.toHaveBeenCalled();
+            expect(response.code).toEqual(ResponseStatus.OK);
+        });
+    
+        it("should return an error if an unexpected error occurs", async () => {
+            const email = "test@example.com";
+            const phoneNumber = "1234567890";
+            const existingUser = { id: 1, email, phoneNumber, isApproved: false };
+            const errorMessage = "Unexpected error";
+    
+            findExistingUser.mockResolvedValueOnce(existingUser);
+            getAxiosResource.mockRejectedValueOnce(new Error(errorMessage));
+    
+            const response = await userService.checkUserAgainstBlacklist(email, phoneNumber);
+    
+            expect(findExistingUser).toHaveBeenCalledWith(email, phoneNumber);
+            expect(getAxiosResource).toHaveBeenCalledTimes(1);
+            expect(updateUser).not.toHaveBeenCalled();
+            expect(response).toEqual(ServiceResponse.error(`Could not validate user at this time: Error: ${errorMessage}`));
         });
     });
 });

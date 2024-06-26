@@ -44,6 +44,32 @@
 					"email",
 					"password"
 				]
+			},
+			"WalletRequest": {
+				"properties": {
+					"amount": {
+						"type": "number"
+					}
+				},
+				"type": "object",
+				"required": [
+					"amount"
+				]
+			},
+			"WalletTransferRequest": {
+				"properties": {
+					"receiverAccountNumber": {
+						"type": "string"
+					},
+					"amount": {
+						"type": "number"
+					}
+				},
+				"type": "object",
+				"required": [
+					"receiverAccountNumber",
+					"amount"
+				]
 			}
 		},
 		"securitySchemes": {
@@ -113,6 +139,105 @@
 				"summary": "User Login",
 				"tags": [
 					"User"
+				]
+			}
+		},
+		"/user/wallet/fund": {
+			"post": {
+				"operationId": "UserController.fundWallet",
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/WalletRequest"
+							}
+						}
+					},
+					"description": "WalletRequest",
+					"required": true
+				},
+				"responses": {
+					"200": {
+						"content": {
+							"application/json": {}
+						},
+						"description": "Successful response"
+					}
+				},
+				"summary": "Fund Wallet",
+				"tags": [
+					"User"
+				],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				]
+			}
+		},
+		"/user/wallet/withdraw": {
+			"post": {
+				"operationId": "UserController.withdrawFromWallet",
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/WalletRequest"
+							}
+						}
+					},
+					"description": "WalletRequest",
+					"required": true
+				},
+				"responses": {
+					"200": {
+						"content": {
+							"application/json": {}
+						},
+						"description": "Successful response"
+					}
+				},
+				"summary": "Withdraw From Wallet",
+				"tags": [
+					"User"
+				],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				]
+			}
+		},
+		"/user/wallet/transfer": {
+			"post": {
+				"operationId": "UserController.transferToWallet",
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/WalletTransferRequest"
+							}
+						}
+					},
+					"description": "WalletTransferRequest",
+					"required": true
+				},
+				"responses": {
+					"200": {
+						"content": {
+							"application/json": {}
+						},
+						"description": "Successful response"
+					}
+				},
+				"summary": "Transfer To Wallet",
+				"tags": [
+					"User"
+				],
+				"security": [
+					{
+						"bearerAuth": []
+					}
 				]
 			}
 		}

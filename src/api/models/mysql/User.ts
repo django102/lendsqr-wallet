@@ -6,6 +6,7 @@ interface User {
     firstName?: string;
     lastName?: string;
     phoneNumber?: string;
+    isApproved?:boolean;
     createdAt?: Date;
     updatedAt?: Date;
 }
