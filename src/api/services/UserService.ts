@@ -63,6 +63,10 @@ export default class UserService extends BaseService {
                 return ServiceResponse.error("Invalid email addresses or password", ResponseStatus.UNAUTHORIZED);
             }
 
+            if(!user.isApproved) {
+                return ServiceResponse.error("Your account has not been approved for operations", ResponseStatus.FORBIDDEN);
+            }
+
             delete user.password;
 
             const token = this.authenticationService.issueToken(user);

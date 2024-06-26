@@ -21,7 +21,8 @@ describe("UserService", () => {
         lastName: "last",
         phoneNumber: "00000",
         password: "hashedPassword",
-        accountNumber: "0000012346"
+        accountNumber: "0000012346",
+        isApproved: true
     };
 
     const headers = {
@@ -150,6 +151,20 @@ describe("UserService", () => {
 
             expect(getUserByEmailMock).toHaveBeenCalledTimes(1);
             expect(response.code).toEqual(ResponseStatus.UNAUTHORIZED);
+            expect(response.data).toBeUndefined();
+        });
+
+        it("should fail if the account has not yet been approved", async () => {
+            getUserByEmailMock.mockResolvedValue({ ...mockUser, isApproved: false });
+            UtilityService.comparePassword = jest.fn().mockResolvedValue(true);
+    
+            const email = "example@example.com";
+            const password = "password123";
+    
+            const response = await userService.login(email, password);
+
+            expect(getUserByEmailMock).toHaveBeenCalledTimes(1);
+            expect(response.code).toEqual(ResponseStatus.FORBIDDEN);
             expect(response.data).toBeUndefined();
         });
     
