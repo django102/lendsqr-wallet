@@ -230,4 +230,104 @@ describe("/user", () => {
             expect(response.body.status).toEqual(mockResponse.status);
         });
     });
+
+    describe("POST /login", () => {
+        let userLoginMock: jest.SpyInstance;
+
+        beforeEach(() => {
+            userLoginMock = jest.spyOn(UserService.prototype, "login");
+        });
+
+        it("should login a user successfully", async () => {   
+            const mockPayload = {
+                "email": "user@example.com",
+                "password": "a3$Assaw3",
+            };
+            const mockUser = { 
+                "email": "user@example.com",
+                "firstName": "string",
+                "lastName": "string",
+                "phoneNumber": "string" 
+            };
+            const mockToken = "someToken";
+            const mockResponse: ServiceResponse = {
+                code: ResponseStatus.OK,
+                status: true,
+                message: "User login Successful",
+                data: { user: { ...mockUser, createdAt: new Date(), id: 1 }, token: mockToken }
+            };
+
+            userLoginMock.mockResolvedValue(Promise.resolve(mockResponse));
+
+            const response = await request(settings.app)
+                .post("/user/login")
+                .send(mockPayload);
+
+            expect(response.status).toBe(mockResponse.code);
+            expect(response.body.status).toEqual(mockResponse.status);
+            expect(response.body.message).toEqual(mockResponse.message);
+        });
+
+        it("should fail to login a user when email is missing", async () => {    
+            const mockPayload = {
+                "password": "a3$Assaw3",
+            };
+            
+            const response = await request(settings.app)
+                .post("/user/login")
+                .send(mockPayload);
+
+            expect(response.status).toBe(ResponseStatus.BAD_REQUEST);
+            expect(response.body.status).toEqual(false);
+        });
+
+        it("should fail to login a user when email is not in the correct format", async () => {    
+            const mockPayload = {
+                "email": "example.com",
+                "password": "a3$Assaw3",
+            };
+            
+            const response = await request(settings.app)
+                .post("/user/login")
+                .send(mockPayload);
+
+            expect(response.status).toBe(ResponseStatus.BAD_REQUEST);
+            expect(response.body.status).toEqual(false);
+        });
+
+        it("should fail to login a user when password is missing", async () => {    
+            const mockPayload = {
+                "email": "user@example.com",
+            };
+           
+            const response = await request(settings.app)
+                .post("/user/login")
+                .send(mockPayload);
+
+            expect(response.status).toBe(ResponseStatus.BAD_REQUEST);
+            expect(response.body.status).toEqual(false);
+        });
+
+        it("should fail if the login process fails", async () => {   
+            const mockPayload = {
+                "email": "user@example.com",
+                "password": "a3$Assaw3",
+            };
+            const mockResponse: ServiceResponse = {
+                code: ResponseStatus.INTERNAL_SERVER_ERROR,
+                status: false,
+                message: "Something happened",
+            };
+
+            userLoginMock.mockResolvedValue(Promise.resolve(mockResponse));
+
+            const response = await request(settings.app)
+                .post("/user/login")
+                .send(mockPayload);
+
+            expect(response.status).toBe(mockResponse.code);
+            expect(response.body.status).toEqual(mockResponse.status);
+            expect(response.body.message).toEqual(mockResponse.message);
+        });
+    });
 });
