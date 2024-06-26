@@ -106,6 +106,9 @@ jobs:
                 # Constants
                 JWT_HASHER: xyzABC$$
 
+                # LendSqr Adjutor 
+                ADJUTOR_BASE_URL: https://me.you/
+                ADJUTOR_API_KEY: xzy
 
 
             - name: Upload coverage reports to Codecov
