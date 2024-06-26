@@ -1,14 +1,17 @@
 import { ResponseStatus } from "../../../../src/api/enums/ResponseStatus";
 import { UserRepository } from "../../../../src/api/repositories/UserRepository";
+import { ServiceResponse } from "../../../../src/api/responses";
 import AuthenticationService from "../../../../src/api/services/AuthenticationService";
 import UserService from "../../../../src/api/services/UserService";
 import UtilityService from "../../../../src/api/services/UtilityService";
+import WalletService from "../../../../src/api/services/WalletService";
 import UserServiceMock from "../../../../test/mocks/services/UserServiceMock";
 
 
 describe("UserService", () => {
     let userService: UserService;
     let authenticationService: AuthenticationService;
+    let walletService: WalletService;
 
     const mockUser = {
         email: "example@example.com",
@@ -16,11 +19,24 @@ describe("UserService", () => {
         lastName: "last",
         phoneNumber: "00000",
         password: "hashedPassword",
+        accountNumber: "0000012346"
+    };
+
+    const headers = {
+        user: {
+            email: "example@example.com",
+            firstName: "first",
+            lastName: "last",
+            id: 1,
+            accountNumber: "0000012345",
+            phoneNumber: "00000000000"
+        },
     };
 
     beforeAll(()=>{
         userService = UserServiceMock.getInstance();
         authenticationService = UserServiceMock.authenticationService;
+        walletService = UserServiceMock.walletService;
     });
 
     afterEach(()=>{
@@ -142,6 +158,118 @@ describe("UserService", () => {
             const response = await userService.login(email, password);
 
             expect(getUserByEmailMock).toHaveBeenCalledTimes(1);
+            expect(response.code).toEqual(ResponseStatus.INTERNAL_SERVER_ERROR);
+            expect(response.data).toBeUndefined();
+        });
+    });
+
+    describe("fundWallet", () => {
+        beforeAll(() => {
+            userService.setCurrentRequestHeaders(headers);
+        });
+
+        it("should successfully fund user wallet", async () => {
+            const fundWalletMock = jest.spyOn(walletService, "fundWallet").mockResolvedValue(new ServiceResponse(true, ResponseStatus.OK, "Successful"));
+
+            const response = await userService.fundWallet(200);
+
+            expect(fundWalletMock).toHaveBeenCalledTimes(1);
+            expect(fundWalletMock).toHaveBeenCalledWith(headers.user.accountNumber, 200);
+            expect(response.code).toEqual(ResponseStatus.OK);
+        });
+
+        it("should handle error during user wallet funding", async () => {
+            const fundWalletMock = jest.spyOn(walletService, "fundWallet").mockRejectedValue(new Error("Database error"));
+    
+            const response = await userService.fundWallet(200);
+
+            expect(fundWalletMock).toHaveBeenCalledTimes(1);
+            expect(fundWalletMock).toHaveBeenCalledWith(headers.user.accountNumber, 200);
+            expect(response.code).toEqual(ResponseStatus.INTERNAL_SERVER_ERROR);
+            expect(response.data).toBeUndefined();
+        });
+    });
+
+    describe("withdrawFromWallet", () => {
+        beforeAll(() => {
+            userService.setCurrentRequestHeaders(headers);
+        });
+
+        it("should successfully withdraw from user wallet", async () => {
+            const fundWalletMock = jest.spyOn(walletService, "withdrawFromWallet").mockResolvedValue(new ServiceResponse(true, ResponseStatus.OK, "Successful"));
+
+            const response = await userService.withdrawFromWallet(200);
+
+            expect(fundWalletMock).toHaveBeenCalledTimes(1);
+            expect(fundWalletMock).toHaveBeenCalledWith(headers.user.accountNumber, 200);
+            expect(response.code).toEqual(ResponseStatus.OK);
+        });
+
+        it("should handle error during user wallet withdrawal", async () => {
+            const fundWalletMock = jest.spyOn(walletService, "withdrawFromWallet").mockRejectedValue(new Error("Database error"));
+    
+            const response = await userService.withdrawFromWallet(200);
+
+            expect(fundWalletMock).toHaveBeenCalledTimes(1);
+            expect(fundWalletMock).toHaveBeenCalledWith(headers.user.accountNumber, 200);
+            expect(response.code).toEqual(ResponseStatus.INTERNAL_SERVER_ERROR);
+            expect(response.data).toBeUndefined();
+        });
+    });
+
+    describe("transferBetweenWallets", () => {
+        beforeAll(() => {
+            userService.setCurrentRequestHeaders(headers);
+        });
+
+        afterEach(() => {
+            jest.resetAllMocks();
+        });
+
+        it("should successfully transfer funds between user wallets", async () => {
+            const findReceipientAccountMock = jest.spyOn(UserRepository, "findByAccountNumber").mockResolvedValue(mockUser);
+            const transferBetweenWalletsMock = jest.spyOn(walletService, "transferBetweenWallets").mockResolvedValue(new ServiceResponse(true, ResponseStatus.OK, "Successful"));
+
+            const response = await userService.transferToWallet(mockUser.accountNumber, 200);
+
+            expect(findReceipientAccountMock).toHaveBeenCalledTimes(1);
+            expect(transferBetweenWalletsMock).toHaveBeenCalledTimes(1);
+            expect(transferBetweenWalletsMock).toHaveBeenCalledWith(headers.user.accountNumber, mockUser.accountNumber, 200);
+            expect(response.code).toEqual(ResponseStatus.OK);
+        });
+
+        it("should fail if receiver account number doesn't exist", async () => {
+            const findReceipientAccountMock = jest.spyOn(UserRepository, "findByAccountNumber").mockResolvedValue(null);
+            const transferBetweenWalletsMock = jest.spyOn(walletService, "transferBetweenWallets").mockResolvedValue(new ServiceResponse(true, ResponseStatus.OK, "Successful"));
+
+            const response = await userService.transferToWallet(mockUser.accountNumber, 200);
+
+            expect(findReceipientAccountMock).toHaveBeenCalledTimes(1);
+            expect(transferBetweenWalletsMock).not.toHaveBeenCalled();
+            expect(response.code).toEqual(ResponseStatus.BAD_REQUEST);
+        });
+
+        it("should fail if receiver account number is the same as the sender account number", async () => {
+            const sameAccountMock = { ...mockUser, accountNumber: headers.user.accountNumber };
+            const findReceipientAccountMock = jest.spyOn(UserRepository, "findByAccountNumber").mockResolvedValue(sameAccountMock);
+            const transferBetweenWalletsMock = jest.spyOn(walletService, "transferBetweenWallets").mockResolvedValue(new ServiceResponse(true, ResponseStatus.OK, "Successful"));
+
+            const response = await userService.transferToWallet(sameAccountMock.accountNumber, 200);
+
+            expect(findReceipientAccountMock).toHaveBeenCalledTimes(1);
+            expect(transferBetweenWalletsMock).not.toHaveBeenCalled();
+            expect(response.code).toEqual(ResponseStatus.BAD_REQUEST);
+        });
+
+        it("should handle error during user wallet withdrawal", async () => {
+            const findReceipientAccountMock = jest.spyOn(UserRepository, "findByAccountNumber").mockResolvedValue(mockUser);
+            const transferBetweenWalletsMock = jest.spyOn(walletService, "transferBetweenWallets").mockRejectedValue(new Error("Database error"));
+    
+            const response = await userService.transferToWallet(mockUser.accountNumber, 200);
+
+            expect(findReceipientAccountMock).toHaveBeenCalledTimes(1);
+            expect(transferBetweenWalletsMock).toHaveBeenCalledTimes(1);
+            expect(transferBetweenWalletsMock).toHaveBeenCalledWith(headers.user.accountNumber, mockUser.accountNumber, 200);
             expect(response.code).toEqual(ResponseStatus.INTERNAL_SERVER_ERROR);
             expect(response.data).toBeUndefined();
         });

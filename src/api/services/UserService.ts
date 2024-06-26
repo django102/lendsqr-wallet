@@ -3,6 +3,7 @@ import { Service } from "typedi";
 import { Logger } from "../../lib/logger";
 import { CharacterCasing } from "../enums/CharacterCasing";
 import { ResponseStatus } from "../enums/ResponseStatus";
+import AuthenticatedParty from "../models/AuthenticatedParty";
 import { UserRepository } from "../repositories/UserRepository";
 import CreateUserRequest from "../requests/payloads/CreateUserRequest";
 import { ServiceResponse } from "../responses";
@@ -10,6 +11,7 @@ import { ServiceResponse } from "../responses";
 import AuthenticationService from "./AuthenticationService";
 import BaseService from "./BaseService";
 import UtilityService from "./UtilityService";
+import WalletService from "./WalletService";
 
 
 @Service()
@@ -17,6 +19,7 @@ export default class UserService extends BaseService {
     constructor(
         private log: Logger,
         private authenticationService: AuthenticationService,
+        private walletService: WalletService
     ) {
         super();
     }
@@ -66,6 +69,51 @@ export default class UserService extends BaseService {
         } catch (err) {
             this.log.error("Could not login at this time", { err });
             return ServiceResponse.error(`Could not login at this time: ${err}`);
+        }
+    }
+
+    public async fundWallet(amount: number): Promise<ServiceResponse> {
+        try {
+            const authParty: AuthenticatedParty = this.currentRequestHeaders["user"];
+            
+            const response = await this.walletService.fundWallet(authParty.accountNumber, amount);
+            return response;
+        } catch (err) {
+            this.log.error("Could not fund wallet at this time", { err });
+            return ServiceResponse.error(`Could not fund wallet at this time: ${err}`);
+        }
+    }
+
+    public async withdrawFromWallet(amount: number): Promise<ServiceResponse> {
+        try {
+            const authParty: AuthenticatedParty = this.currentRequestHeaders["user"];
+
+            const response = await this.walletService.withdrawFromWallet(authParty.accountNumber, amount);
+            return response;
+        } catch (err) {
+            this.log.error("Could not withdraw from wallet at this time", { err });
+            return ServiceResponse.error(`Could not withdraw from wallet at this time: ${err}`);
+        }
+    }
+
+    public async transferToWallet(receiverAccountNumber: string, amount:number): Promise<ServiceResponse> {
+        try {
+            const authParty: AuthenticatedParty = this.currentRequestHeaders["user"];
+
+            const fundsRecipient = await UserRepository.findByAccountNumber(receiverAccountNumber);
+            if(!fundsRecipient) {
+                return ServiceResponse.error("Wallet with account number does not exist", ResponseStatus.BAD_REQUEST);
+            }
+
+            if(receiverAccountNumber === authParty.accountNumber) {
+                return ServiceResponse.error("You can't transfer to your own wallet", ResponseStatus.BAD_REQUEST);
+            }
+
+            const response = await this.walletService.transferBetweenWallets(authParty.accountNumber, receiverAccountNumber, amount);
+            return response;
+        } catch (err) {
+            this.log.error("Could not complete transfer at this time", { err });
+            return ServiceResponse.error(`Could not complete transfer at this time: ${err}`);
         }
     }
 }

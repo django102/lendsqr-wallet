@@ -43,6 +43,18 @@ class UserRepositoryInstance {
         }
     }
 
+    async findByAccountNumber(accountNumber) {
+        try {
+            const user = await db(this.tableName)
+                .where({ accountNumber })
+                .first();
+                // Adjust withGraphFetched if necessary for related data
+            return user;
+        } catch (err: any) {
+            throw new Error(`Unable to retrieve user by accountNumber: ${err.message}`);
+        }
+    }
+
     // Find existing user by email and phoneNumber
     async findExisting(email:string, phoneNumber: string) {
         const user = await db(this.tableName)

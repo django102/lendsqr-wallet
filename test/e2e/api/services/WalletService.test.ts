@@ -1,5 +1,6 @@
 import { ResponseStatus } from "../../../../src/api/enums/ResponseStatus";
 import { TransactionType } from "../../../../src/api/enums/TransactionType";
+import LedgerAccountBalance from "../../../../src/api/models/LedgerAccountBalance";
 import LedgerService from "../../../../src/api/services/LedgerService";
 import WalletService from "../../../../src/api/services/WalletService";
 import WalletServiceMock from "../../../../test/mocks/services/WalletServiceMock";
@@ -55,7 +56,7 @@ describe("WalletService", () => {
 
     describe("withdrawFromWallet", () => {
         const wallet = { userId: 1, accountNumber: "0000012345", };
-        const balance = { accountNumber: wallet.accountNumber, availableBalance: 30000, ledgerBalance: 30000 };
+        const balance: LedgerAccountBalance = { accountNumber: wallet.accountNumber, availableBalance: 30000, ledgerBalance: 30000 };
         const ledger = { accountNumber: "0000000000", credit: 10000, debit: 0, reference: "myRef", transactionType: TransactionType.FUNDING, description: "something", transactionDate: new Date() };
 
         it("should successfully withdraw from user wallet", async () => {
