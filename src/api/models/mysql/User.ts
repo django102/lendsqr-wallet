@@ -1,4 +1,4 @@
-interface User {
+interface User { 
     id?: number;
     accountNumber?: string,
     email?: string;
