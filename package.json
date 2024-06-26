@@ -1,7 +1,7 @@
 {
   "name": "lendsqr-wallet",
   "displayName": "Lendsqr Demo Wallet",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "main": "src/app.ts",
   "repository": "https://github.com/django102/lendsqr-wallet.git",
   "author": "Wale K. Santos <eighteen.eighty.one@outlook.com>",

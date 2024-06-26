@@ -2,7 +2,7 @@
 
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE.)
 &nbsp;
-[![Version: v0.0.0](https://img.shields.io/badge/Lendsqr_Wallet-v0.0.0-blue?style=flat&logo=money)](CHANGELOG.md)
+[![Version: v1.0.0](https://img.shields.io/badge/Lendsqr_Wallet-v1.0.0-blue?style=flat&logo=money)](CHANGELOG.md)
 &nbsp;
 [![codecov](https://codecov.io/gh/django102/lendsqr-wallet/graph/badge.svg?token=FsVdxFIsVR)](https://codecov.io/gh/django102/lendsqr-wallet)
 &nbsp;
@@ -58,6 +58,13 @@ This respository is available as open source under the terms of the [Apache 2.0 
 | **SWAGGER_ROUTE**          |                        | `/swagger`                                                                                        |
 | **SWAGGER_FILE**           |                        | `api/swagger.json`                                                                                |
 | **SWAGGER_STATS_ROUTE**    |                        | `/swagger-stats/ui`                                                                               |
+| &nbsp;                     |                        |                                                                                                   |
+| `# Constants`              |                        |                                                                                                   |
+| **JWT_HASHER**             |                        | `xyz`                                                                                             |
+| &nbsp;                     |                        |                                                                                                   |
+| `# Lendsqr Adjutor`        |                        |                                                                                                   |
+| **ADJUTOR_BASE_URL**       |                        | `https://adjutor.url/`                                                                            |
+| **ADJUTOR_API_KEY**        |                        | `abc`                                                                                             |
 | &nbsp;                     |                        |                                                                                                   |
 
 
