@@ -24,12 +24,12 @@ export default class UtilityService {
         return isSame;
     }
 
-    public static generateRandomString(length: number = 36, casing: CharacterCasing = CharacterCasing.LOWER) {
+    public static generateRandomString(length: number = 36, casing: CharacterCasing = CharacterCasing.LOWER, numbersOnly: boolean = false) {
         if(length <= 0){
             return "";
         }
 
-        const randomString = chance.string({ length, casing, alpha: true, numeric: true });
+        const randomString = chance.string({ length, casing, alpha: numbersOnly === false, numeric: true });
         return randomString;
     }
 }
