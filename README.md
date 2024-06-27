@@ -98,6 +98,12 @@ You don't necessarily need to write your own scripts as running the `create-migr
 - `migrate`: run outstanding migrations for the database configured. `npm run migrate`
 
 
+### Database E-R Diagram
+[Current E-R Diagram](https://dbdesigner.page.link/UXJkhPh6CMhK7EdY6)
+![Current E-R Diagram](images/E-R.png)
+
+
+
 &nbsp;
 
 ### Pushing Code
