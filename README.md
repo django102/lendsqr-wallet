@@ -72,6 +72,7 @@ This respository is available as open source under the terms of the [Apache 2.0 
 ### Dependencies
 - Node >=20.10.0
 - MySQL 8
+- Knex CLI 3.1.0
 
 &nbsp;
 
@@ -95,15 +96,12 @@ You don't necessarily need to write your own scripts as running the `create-migr
 - `create-migration`: generate generate a new migration file
   - You will need to supply a name for your migration, e.g. `npm run create-migration --name=name-of-script`
 - `migrate`: run outstanding migrations for the database configured. `npm run migrate`
-- `revert-migration`: rollback one database migration
 
 
 &nbsp;
 
 ### Pushing Code
 - This repo has pre-commit hooks that run a lint process over the codebase. So you might need to run `git add .` and `git commit -m "message here"` more than once to have all your commits + the linted code committed.
-- Always create a new branch from the `main` branch, and create your PRs against both the `staging` and `main` branches.
-
 
 &nbsp;
 

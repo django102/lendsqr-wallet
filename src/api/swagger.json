@@ -86,6 +86,23 @@
 	},
 	"openapi": "3.0.0",
 	"paths": {
+		"/": {
+			"get": {
+				"operationId": "HomeController.loadDefaultPage",
+				"responses": {
+					"200": {
+						"content": {
+							"application/json": {}
+						},
+						"description": "Successful response"
+					}
+				},
+				"summary": "Load default page",
+				"tags": [
+					"Home"
+				]
+			}
+		},
 		"/user": {
 			"post": {
 				"operationId": "UserController.create",
