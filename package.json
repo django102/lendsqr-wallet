@@ -15,7 +15,7 @@
     "build": "nps build",
     "lint": "nps lint",
     "prepare": "husky install",
-    "deploy": "yarn install && yarn run build",
+    "deploy": "yarn && yarn run build",
     "create-migration": "knex migrate:make $npm_config_name -x ts --migrations-directory ./src/database/migrations/mysql",
     "migrate": "knex migrate:latest --migrations-directory ./src/database/migrations/mysql"
   },
@@ -23,7 +23,8 @@
     "lint"
   ],
   "engines": {
-    "node": ">=20.10.0"
+    "node": ">=20.10.0",
+    "yarn": "~>1.22.21"
   },
   "keywords": [
     "NodeJS",
