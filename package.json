@@ -8,9 +8,9 @@
   "license": "Apache-2.0",
   "private": true,
   "scripts": {
-    "nps": "cross-env NODE_ENV=development nps",
-    "serve": "cross-env NODE_ENV=development nps serve",
-    "test": "cross-env NODE_ENV=test nps test",
+    "nps": "cross-env NODE_ENV=$(node -r dotenv/config -e \"console.log(process.env.NODE_ENV)\") nps",
+    "start": "yarn run serve",
+    "serve": "cross-env NODE_ENV=$(node -r dotenv/config -e \"console.log(process.env.NODE_ENV)\") nps serve",
     "testAndWatch": "cross-env NODE_ENV=test nps 'test --watchAll'",
     "build": "nps build",
     "lint": "nps lint",
